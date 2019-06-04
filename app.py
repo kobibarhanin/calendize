@@ -147,9 +147,13 @@ def get_instances_fetch():
 @app.route("/calculate")
 def get_instances():
     print("* Calculating optimal schedule *")
+
     startDate = datetime.datetime.fromtimestamp(int(request.args.get('_startDate'))/1000.0)
     endDate = datetime.datetime.fromtimestamp(int(request.args.get('_endDate'))/1000.0)
+    startDate=startDate.replace(hour=0)
+    endDate=endDate.replace(hour=0)
     print("from: " + str(startDate) + " ,to: " + str(endDate))
+
     anchor_instances = request.args.get('_anchor_instances').split(",")
     anchor_instances.pop(len(anchor_instances)-1)
     floating_instances = request.args.get('_floating_instances').split(",")

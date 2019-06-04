@@ -1,0 +1,10 @@
+*.pyc
+.idea*
+.*.swp
+__pycache__*
+venv
+credentials.json
+token.json
+client_secret.json
+test_schedule.json
+TODOs

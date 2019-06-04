@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8' />
+
+	<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+	<script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+	<script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+	<script src="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.js"></script>
+	<link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.min.css' rel='stylesheet' />
+	<link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.min.js'></script>
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+	<link href="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.css" rel="stylesheet" type="text/css" />
+
+
+	<link href='static/CalCendar.css?version=hu2h' rel='stylesheet' />
+	<script src="static/CalCendar.js?version=eee23swv32fddv"></script>
+
+</head>
+<body>
+	<div class="ui container" style="padding-top: 3%; padding-bottom: 3%">
+		<div id="header" class="ui header centered" style="padding-bottom: 3%">
+			<div class="ui message">
+				<h1 class="ui huge header">
+					CalendiZe
+				</h1>
+
+			</div>
+		</div>
+
+		<div class="ui form" id="datepicker" style="margin-bottom: 20px">
+			<div class="two fields">
+				  <div class="field">
+					<label>Start date</label>
+					<div class="ui calendar" id="rangestart">
+					  <div class="ui input left icon">
+						<i class="calendar icon"></i>
+						<input type="text" placeholder="Start">
+					  </div>
+					</div>
+				  </div>
+				  <div class="field">
+					<label>End date</label>
+					<div class="ui calendar" id="rangeend">
+					  <div class="ui input left icon">
+						<i class="calendar icon"></i>
+						<input type="text" placeholder="End">
+					  </div>
+					</div>
+				  </div>
+			</div>
+			<button id="fetch_button" class="ui button">Fetch events</button>
+		</div>
+
+		<div id='calendar'></div>
+
+	</div>
+
+	<div class="ui container">
+		<h2> Events configurations</h2>
+
+		<div class="ui container" style="margin-bottom: 30px; border: solid #3a87ad">
+			<div class="ui message" style="margin: auto">
+				<h3>Anchor Events:</h3>
+				<select id="dd_anchor" class="ui dropdown" style="width: 20%">
+				  <option value="">Instances</option>
+				</select>
+				<button class="ui button" onclick="build_dd('#dd_anchor','anchor_table')">Add</button>
+			</div>
+			<table id="anchor_table" class="event_table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>ID</th>
+						<th>Start Time</th>
+						<th>End Time</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="ui container" style="margin-bottom: 30px; border: solid #3a87ad">
+			<div class="ui message" style="margin: auto">
+				<h3>Floating Events:</h3>
+				<select id="dd_floating" class="ui dropdown" style="width: 20%">
+				  <option value="">Instances</option>
+				</select>
+				<button class="ui button" onclick="build_dd('#dd_floating','floating_table')">Add</button>
+			</div>
+			<table id="floating_table" class="event_table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>ID</th>
+						<th>Start Time</th>
+						<th>End Time</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+
+	<button id="calc_button" class="ui button big" style="margin-inline-start: 45%;margin-bottom: 30px;">Optimize!</button>
+
+</body>
+</html>

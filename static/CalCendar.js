@@ -47,20 +47,22 @@ function initiate(events,defaultDate) {
 
     $("#calc_button").click(function(){
 
-    $.getJSON("/calculate",
-             {
-                 _startDate: startDate.getTime(),
-                 _endDate: endDate.getTime(),
-                 _anchor_instances:arrayToString(anchor_instances),
-                 _floating_instances:arrayToString(floating_instances)
-             },
-            function(instances){
-                $('#calendar').empty();
-                $("#datepicker").after("<div id='calendar'></div>");
 
-                initiate(instances, startDate.toISOString().split("T")[0]);
+        $.getJSON("/calculate",
+                 {
+                     _startDate: startDate.getTime(),
+                     _endDate: endDate.getTime(),
+                     _anchor_instances:arrayToString(anchor_instances),
+                     _floating_instances:arrayToString(floating_instances),
+                     _algorithm: $("#dd_algo option:selected").text()
+                 },
+                function(instances){
+                    $('#calendar').empty();
+                    $("#datepicker").after("<div id='calendar'></div>");
 
-      });
+                    initiate(instances, startDate.toISOString().split("T")[0]);
+
+          });
     });
 
     $("#fetch_button").click(function(){

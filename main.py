@@ -11,7 +11,8 @@ def fetch(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', se
     return [instance.to_json() for instance in instances]
 
 
-def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anchor_instances=None, floating_instances=None, service=None):
+def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anchor_instances=None,
+        floating_instances=None, algorithm = 'Genetic Algorithm',service=None):
     # === Section 1 (Source): Read data from source === #
     google_source = src.GoogleO2AuthSource(service)
     instances, raw_instances = google_source.get_instances(start_date, end_date)
@@ -55,20 +56,14 @@ def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anch
 
 
     # === Section 3 (Calculate): Use some engine to build an optimal schedule === #
+    if algorithm == 'Genetic Algorithm':
+        engine = eng.GeneticEngine(events, population_size=100, elitism_factor=0.2, mutation_rate=0.2, generations=20)
+    elif algorithm == 'Simulated Annealing':
+        engine = eng.SimulatedAnnealingEngine(events)
+    else:
+        raise Exception(f'undefined algorithm: {algorithm}')
 
-    genetic_engine = eng.GeneticEngine(events, population_size=100, elitism_factor=0.2, mutation_rate=0.2, generations=20)
-
-    schedule = genetic_engine.run()
-
-    retval = schedule.to_json()
-    return retval
-    # return schedule.to_json()
-
-    # simulated_annealing_engine = eng.SimulatedAnnealingEngine(events)
-    #
-    # schedule = simulated_annealing_engine.run()
-
-    # return schedule.to_json()
+    return engine.run().to_json()
 
     # === Section 4 (Upload): Upload schedule to source (GUI, Calendar) === #
 

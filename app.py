@@ -145,13 +145,13 @@ def fetch_instances():
 def get_instances():
     start_date = datetime.fromtimestamp(int(request.args.get('_startDate'))/1000.0).date()
     end_date = datetime.fromtimestamp(int(request.args.get('_endDate'))/1000.0).date() + timedelta(days=1)
-
-    print("* Calculating optimal schedule - from: " + str(start_date) + " ,to: " + str(end_date))
-
     anchor_instances = request.args.get('_anchor_instances').split(",")
     anchor_instances.pop(len(anchor_instances)-1)
     floating_instances = request.args.get('_floating_instances').split(",")
     floating_instances.pop(len(floating_instances)-1)
+    algorithm = request.args.get('_algorithm')
+
+    print(f'* Calculating optimal schedule using: {algorithm} - from: {str(start_date) },to: {str(end_date)}')
 
     # Load credentials from the session.
     credentials = google.oauth2.credentials.Credentials(
@@ -163,8 +163,10 @@ def get_instances():
                     end_date=end_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                     anchor_instances=anchor_instances,
                     floating_instances=floating_instances,
+                    algorithm=algorithm,
                     service=service)
 
+    print('deploying solution')
     return jsonify(data)
 
 

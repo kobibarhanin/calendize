@@ -7,12 +7,13 @@ from dateutil.parser import parse as dtparse
 
 import Instance as ins
 
+
 class Source(ABC):
 
     def get_instances(self, from_time, to_time):
-        raw_instances = self.get_raw_instances(from_time,to_time)
+        raw_instances = self.get_raw_instances(from_time, to_time)
         instances = self.parse_instances(raw_instances)
-        return instances,raw_instances
+        return instances, raw_instances
 
     def get_raw_instances(self, from_time, to_time):
         pass

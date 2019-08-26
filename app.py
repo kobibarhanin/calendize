@@ -1,5 +1,5 @@
 from flask import render_template, jsonify, request
-import datetime
+from datetime import datetime, timedelta
 
 import flask
 import requests
@@ -123,15 +123,11 @@ def render_homePage():
 
 
 @app.route("/fetch")
-def get_instances_fetch():
-    print("* Fetching instances from calendar *")
+def fetch_instances():
+    start_date = datetime.fromtimestamp(int(request.args.get('_startDate'))/1000.0).date()
+    end_date = datetime.fromtimestamp(int(request.args.get('_endDate'))/1000.0).date() + timedelta(days=1)
 
-    startDate = datetime.datetime.fromtimestamp(int(request.args.get('_startDate'))/1000.0)
-    endDate = datetime.datetime.fromtimestamp(int(request.args.get('_endDate'))/1000.0)
-    startDate=startDate.replace(hour=0)
-    endDate=endDate.replace(hour=0)
-
-    print("from: " + str(startDate) + " ,to: " + str(endDate))
+    print("* Fetching instances - from: " + str(start_date) + " ,to: " + str(end_date))
 
     # Load credentials from the session.
     credentials = google.oauth2.credentials.Credentials(
@@ -139,20 +135,18 @@ def get_instances_fetch():
     service = googleapiclient.discovery.build(
         API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
-    data = main.fetch(startDate.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),endDate.strftime('%Y-%m-%dT%H:%M:%S.%fZ'), service=service)
+    data = main.fetch(start_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),end_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                      service=service)
 
     return jsonify(data)
 
 
 @app.route("/calculate")
 def get_instances():
-    print("* Calculating optimal schedule *")
+    start_date = datetime.fromtimestamp(int(request.args.get('_startDate'))/1000.0).date()
+    end_date = datetime.fromtimestamp(int(request.args.get('_endDate'))/1000.0).date() + timedelta(days=1)
 
-    startDate = datetime.datetime.fromtimestamp(int(request.args.get('_startDate'))/1000.0)
-    endDate = datetime.datetime.fromtimestamp(int(request.args.get('_endDate'))/1000.0)
-    startDate=startDate.replace(hour=0)
-    endDate=endDate.replace(hour=0)
-    print("from: " + str(startDate) + " ,to: " + str(endDate))
+    print("* Calculating optimal schedule - from: " + str(start_date) + " ,to: " + str(end_date))
 
     anchor_instances = request.args.get('_anchor_instances').split(",")
     anchor_instances.pop(len(anchor_instances)-1)
@@ -165,7 +159,11 @@ def get_instances():
     service = googleapiclient.discovery.build(
         API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
-    data = main.run(startDate=startDate.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),endDate=endDate.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),anchor_instances=anchor_instances,floating_instances=floating_instances,service=service)
+    data = main.run(start_date=start_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                    end_date=end_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                    anchor_instances=anchor_instances,
+                    floating_instances=floating_instances,
+                    service=service)
 
     return jsonify(data)
 

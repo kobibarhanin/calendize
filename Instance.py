@@ -1,5 +1,6 @@
 from abc import ABC
 
+
 class Instance(ABC):
 
     def __init__(self, title, description, start_time, end_time, instance_id = None, colorId = None) -> None:

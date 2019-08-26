@@ -1,8 +1,10 @@
 jQuery.ajaxSettings.traditional = true;
 
 instances_golbal = null;
-floating_instances=[]
-anchor_instances=[]
+instances_golbal_mapping = {};
+
+floating_instances=[];
+anchor_instances=[];
 
 $(document).ready(function () {
     initiate([], new Date().toISOString().split("T")[0])
@@ -75,7 +77,12 @@ function initiate(events,defaultDate) {
                 $('#calendar').empty();
                 $("#datepicker").after("<div id='calendar'></div>");
 
+
                 instances_golbal=instances;
+                for (var i=0; i< instances_golbal.length; i++){
+                   instances_golbal_mapping[instances_golbal[i]['id']]=i;
+                }
+
 
                 for(i=0; i<instances.length; i++){
                     $('#dd_anchor').append( new Option(instances[i]["title"],i));
@@ -83,11 +90,14 @@ function initiate(events,defaultDate) {
                 }
 
                 initiate(instances,startDate.toISOString().split("T")[0]);
+                build_table(instances_golbal,'events_table')
 
         });
     });
 
 }
+
+
 
 
 function build_dd (dd,table_id) {
@@ -114,10 +124,61 @@ function build_dd (dd,table_id) {
 }
 
 
+function build_table (entries,table_id) {
+    var table = document.getElementById(table_id);
+    entries.forEach(function(entry){
+        var row = table.insertRow(table.rows.length);
+        row.id = "row_"+entry["id"];
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        var cell5 = row.insertCell(4);
+        cell1.innerHTML = entry['title'];
+        cell2.innerHTML = entry["id"];
+        cell3.innerHTML = entry["start"];
+        cell4.innerHTML = entry["end"];
+        cell5.innerHTML = "<input id="+entry['id']+" type='checkbox' name="+entry['id']+" value='some_value'>"
+    });
+}
+
+function add_selected_to_table(table_id) {
+    for (var i=0; i< instances_golbal.length; i++){
+        if($('#'+instances_golbal[i]['id']).is(':checked')){
+            add_to_row_table(instances_golbal[i],table_id)
+            $('#row_'+instances_golbal[i]['id']).remove();
+        }
+    }
+}
+
+function add_to_row_table(entry,table_id) {
+    var table = document.getElementById(table_id);
+    var row = table.insertRow(table.rows.length);
+    row.id = "row_"+entry["id"];
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(2);
+    var cell4 = row.insertCell(3);
+    cell1.innerHTML = entry['title'];
+    cell2.innerHTML = entry["id"];
+    cell3.innerHTML = entry["start"];
+    cell4.innerHTML = entry["end"];
+
+    if (table_id === "anchor_table"){
+        let idx = instances_golbal_mapping[entry["id"]];
+        anchor_instances.push(instances_golbal[idx])
+    }
+    else {
+        let idx = instances_golbal_mapping[entry["id"]];
+        floating_instances.push(instances_golbal[idx])
+    }
+}
+
+
 function arrayToString(array){
-    res = ""
+    res = "";
     for (i=0; i<array.length; i++){
-        res+=array[i]+","
+        res += array[i]["id"]+","
     }
     return res
 }

@@ -167,6 +167,7 @@ def get_instances():
                     service=service)
 
     print('deploying solution')
+    print(data)
     return jsonify(data)
 
 

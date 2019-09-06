@@ -45,9 +45,23 @@ function initiate(events,defaultDate) {
     events: events
   });
 
+    $("#dev_button").unbind('click').click(function(){
 
+        for (var i=0; i< instances_golbal.length; i++){
+            title = instances_golbal[i]['title']
+            console.log(title)
+            if (title.includes('Anc')){
+                add_to_row_table(instances_golbal[i], 'anchor_table')
+                $('#row_'+instances_golbal[i]['id']).remove();
+            }
+            else if (title.includes('Flt')){
+                add_to_row_table(instances_golbal[i], 'floating_table')
+                $('#row_'+instances_golbal[i]['id']).remove();
+            }
+        }
+    });
 
-    $("#calc_button").click(function(){
+    $("#calc_button").unbind('click').click(function(){
 
 
         $.getJSON("/calculate",
@@ -61,13 +75,11 @@ function initiate(events,defaultDate) {
                 function(instances){
                     $('#calendar').empty();
                     $("#datepicker").after("<div id='calendar'></div>");
-
-                    initiate(instances, startDate.toISOString().split("T")[0]);
-
+                    initiate(instances,endDate.toISOString().split("T")[0]);
           });
     });
 
-    $("#fetch_button").click(function(){
+    $("#fetch_button").unbind('click').click(function(){
         $.getJSON("/fetch",
              {
                 _startDate: startDate.getTime(),
@@ -89,7 +101,7 @@ function initiate(events,defaultDate) {
                     $('#dd_floating').append( new Option(instances[i]["title"],i));
                 }
 
-                initiate(instances,startDate.toISOString().split("T")[0]);
+                initiate(instances,endDate.toISOString().split("T")[0]);
                 build_table(instances_golbal,'events_table')
 
         });

@@ -8,6 +8,8 @@ anchor_instances=[];
 opportune_instances=[];
 routine_instances=[];
 
+calendar_instances=[];
+
 $(document).ready(function () {
     initiate([], new Date().toISOString().split("T")[0])
 });
@@ -34,6 +36,7 @@ function initiate(events,defaultDate) {
     });
 
     $('#routine_from_calendar').calendar();
+
     $('#routine_to_calendar').calendar();
 
     $('#calendar').fullCalendar({
@@ -67,6 +70,12 @@ function initiate(events,defaultDate) {
                 add_to_row_table(instances_golbal[i], 'opportune_table')
             }
         }
+
+        $("#routine_title").val("Routine")
+        $("#routine_duration").val("1:30")
+        $("#routine_from").val("December 23, 2018 4:00 PM")
+        $("#routine_to").val("December 28, 2018 10:00 PM")
+
     });
 
     $("#calc_button").unbind('click').click(function(){
@@ -83,6 +92,7 @@ function initiate(events,defaultDate) {
                 function(instances){
                     $('#calendar').empty();
                     $("#datepicker").after("<div id='calendar'></div>");
+                    calendar_instances = instances
                     initiate(instances,endDate.toISOString().split("T")[0]);
                     $("html, body").animate({ scrollTop: 0 }, "slow");
           });
@@ -111,8 +121,8 @@ function initiate(events,defaultDate) {
 
     $("#routine_button").unbind('click').click(function(){
 
-        time_from = $("#routine_from").val()
-        time_to = $("#routine_to").val()
+        time_from = new Date($("#routine_from").val()).getTime()/1000
+        time_to = new Date($("#routine_to").val()).getTime()/1000
 
         title = $('#routine_title').val();
         duration = $('#routine_duration').val();
@@ -248,7 +258,7 @@ function arrayToString(array){
 function routienArrayToString(array){
     res = "";
     for (i=0; i<array.length; i++){
-        res += array[i]["title"]+";"+array[i]["duration"]+";"+array[i]["time_from"]+";"+array[i]["time_to"]+"|"
+        res += array[i]["title"]+";"+array[i]["duration"]+";"+array[i]["time_from"]+";"+array[i]["time_to"]+","
     }
     return res
 }

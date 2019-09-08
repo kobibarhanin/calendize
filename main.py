@@ -3,6 +3,7 @@ from __future__ import print_function
 import Source as src
 import Event as evnt
 import Engine as eng
+import Instance as inst
 
 
 def fetch(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', service=None):
@@ -12,12 +13,14 @@ def fetch(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', se
 
 
 def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anchor_instances=None,
-        floating_instances=None, algorithm = 'Genetic Algorithm',service=None):
+        floating_instances=None, routine_instances=None, algorithm = 'Genetic Algorithm',service=None):
     # === Section 1 (Source): Read data from source === #
     google_source = src.GoogleO2AuthSource(service)
     instances, raw_instances = google_source.get_instances(start_date, end_date)
 
     # === Section 2 (User): Tag and cluster data with event type: anchor, float. for testing === #
+
+
     events = []
     floating_events = dict()
     for instance in instances:
@@ -35,7 +38,20 @@ def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anch
                                                                    instance.colorId)
                 events.append(floating_events[instance.title])
         else:
-            print("UNALLOCATED INSTANCE: " + instance.title + " , "+ instance.instance_id)
+            print("UNALLOCATED INSTANCE: " + instance.title + " , " + instance.instance_id)
+
+    if routine_instances:
+        for instance in routine_instances:
+            name, duration, start_time, end_time = instance.split(";")
+            duration_parts = duration.split(":")
+            hours = int(duration_parts[0])
+            minutes = 0
+            if len(duration_parts) > 1:
+                minutes = int(duration_parts[1])
+            rand_routine_instances = [inst.RandomInstance(name, hours, minutes, int(start_time), int(end_time)),
+                                      inst.RandomInstance(name, hours, minutes, int(start_time), int(end_time)),
+                                      inst.RandomInstance(name, hours, minutes, int(start_time), int(end_time))]
+            events.append(evnt.FloatingEvent(name, name, rand_routine_instances, '#a4bdfc'))
 
 
     # events = []

@@ -153,8 +153,11 @@ def get_instances():
     floating_instances.pop(len(floating_instances)-1)
     opportune_instances = request.args.get('_opportune_instances').split(",")
     opportune_instances.pop()
-    routine_instances = request.args.get('_routine_instances').split("|")
+    routine_instances = request.args.get('_routine_instances').split(",")
     routine_instances.pop()
+
+
+
     algorithm = request.args.get('_algorithm')
 
     print(f'* Calculating optimal schedule using: {algorithm} - from: {str(start_date) },to: {str(end_date)}')
@@ -169,6 +172,7 @@ def get_instances():
                             end_date=end_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                             anchor_instances=anchor_instances + opportune_instances,
                             floating_instances=floating_instances,
+                            routine_instances=routine_instances,
                             algorithm=algorithm,
                             service=service)
 

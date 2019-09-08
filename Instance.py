@@ -1,5 +1,6 @@
 from abc import ABC
-
+from datetime import datetime, timedelta
+import random
 
 class Instance(ABC):
 
@@ -28,9 +29,36 @@ class Instance(ABC):
         self.event_index = index
 
 
-# class RandomInstance(Instance):
-#     def __init__(self, title, description, duration, instance_id=None) -> None:
-#         super().__init__(title, description, start_time, end_time, instance_id, colorId='#a4bdfc')
+class RandomInstance(Instance):
+    def __init__(self, title, hours, minutes, start_time, end_time, instance_id=None) -> None:
+        super().__init__(title, title, start_time=None, end_time=None, instance_id=instance_id, colorId='#a4bdfc')
+        start_time = datetime.fromtimestamp(start_time)
+        end_time = datetime.fromtimestamp(end_time)
+        length = timedelta(hours=hours, minutes=minutes)
+        end_time -= length
+        # delta = start_time - end_time
+
+        self.start_time = self.random_date(start_time, end_time)
+        while not self.start_time.hour in range(6, 24):
+            self.start_time = self.random_date(start_time, end_time)
+
+        self.end_time = self.start_time + length
+
+
+    def random_date(self, start, end):
+        """Generate a random datetime between `start` and `end`"""
+        return start + timedelta(
+            # Get a random amount of seconds between `start` and `end`
+            seconds=random.randint(0, int((end - start).total_seconds())),
+        )
+
+    def to_json(self):
+        return {'title': self.title,
+                'start': GoogleInstance.parse_time_object(self.start_time),
+                'end': GoogleInstance.parse_time_object(self.end_time),
+                'color': self.colorId,
+                'id': self.instance_id
+                }
 
 class GoogleInstance(Instance):
 

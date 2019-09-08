@@ -62,12 +62,12 @@
 	<div class="ui container">
 		<h2> Events configurations</h2>
 
-        <div class="ui container" style="margin-bottom: 30px; border: solid #3a87ad">
+        <div class="ui container message" style="margin-bottom: 30px; border: solid #3a87ad">
 			<div class="ui message" style="margin: auto">
 				<h3>Events:</h3>
 			</div>
 
-			<table id="events_table" class="event_table">
+			<table id="events_table" class="event_table ui message">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -84,14 +84,15 @@
             <div class="ui message" style="margin: auto">
 				<button class="ui button" onclick="add_selected_to_table('anchor_table')">Add selected to anchor</button>
 				<button class="ui button" onclick="add_selected_to_table('floating_table')">Add selected to float</button>
+				<button class="ui button" onclick="add_selected_to_table('opportune_table')">Add selected to opportune</button>
 			</div>
 		</div>
 
-		<div class="ui container" style="margin-bottom: 30px; border: solid #3a87ad">
+		<div class="ui container message" style="margin-bottom: 30px; border: solid #3a87ad; background-color: #034f84">
 			<div class="ui message" style="margin: auto">
 				<h3>Anchor Events:</h3>
 			</div>
-			<table id="anchor_table" class="event_table">
+			<table id="anchor_table" class="event_table ui message">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -109,11 +110,11 @@
 			</div>
 		</div>
 
-		<div class="ui container" style="margin-bottom: 30px; border: solid #3a87ad">
-			<div class="ui message" style="margin: auto">
+		<div class="ui container message" style="margin-bottom: 30px; border: solid #3a87ad; background-color: #82b74b">
+			<div class="ui message" style="margin: auto;">
 				<h3>Floating Events:</h3>
 			</div>
-			<table id="floating_table" class="event_table">
+			<table id="floating_table" class="event_table ui message">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -130,6 +131,84 @@
 				<button class="ui button" onclick="remove_selected('floating_table')">Remove selected</button>
 			</div>
 		</div>
+
+		<div class="ui container message" style="margin-bottom: 30px; border: solid #3a87ad; background-color: #f7786b">
+			<div class="ui message" style="margin: auto">
+				<h3>Opportune Events:</h3>
+			</div>
+			<table id="opportune_table" class="event_table ui message">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>ID</th>
+						<th>Start Time</th>
+						<th>End Time</th>
+                        <th>Select</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+            <div class="ui message" style="margin: auto">
+				<button class="ui button" onclick="remove_selected('opportune_table')">Remove selected</button>
+			</div>
+		</div>
+
+
+		<div class="ui container message" style="margin-bottom: 30px; border: solid #3a87ad; background-color: #ffef96">
+			<div class="ui message" style="margin: auto">
+				<h3>Routine Events:</h3>
+			</div>
+
+			<div class="ui form message">
+			  <div class="inline fields">
+				<div class="four wide field">
+					<label>Title</label>
+					<input id="routine_title" type="text">
+				</div>
+				<div class="four wide field">
+					<label>Duration</label>
+					<input id="routine_duration" type="text" placeholder=" < h:m > (e.g. = 1h,15m)">
+				</div>
+				<div class="field">
+					<div id="routine_from_calendar" class="ui calendar">
+						<div class="ui input left icon">
+							<i class="calendar icon"></i>
+							<input id="routine_from" type="text" name="date_estimated_arrival" placeholder="From">
+						</div>
+					</div>
+				</div>
+				<div class="field">
+					<div id="routine_to_calendar" class="ui calendar">
+						<div class="ui input left icon">
+							<i class="calendar icon"></i>
+							<input id="routine_to" type="text" name="date_estimated_arrival" placeholder="To">
+						</div>
+					</div>
+				</div>
+				  <div id="routine_button" class="ui submit button">Add</div>
+			  </div>
+			</div>
+
+			<table id="routine_table" class="event_table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Duration</th>
+						<th>From</th>
+						<th>To</th>
+                        <th>Select</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+
+            <div class="ui message" style="margin: auto">
+				<button class="ui button" onclick="remove_selected_routing()">Remove selected</button>
+			</div>
+		</div>
+
 
         <div class="ui container">
             <h2> Algorithm configurations</h2>

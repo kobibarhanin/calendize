@@ -142,5 +142,5 @@ class GeneticEngine(Engine):
               ", Best fitness = " + str(population.best_fitness()) +
               ", Worst fitness = " + str(population.genes[self.population_size - 1].fitness))
 
-        return population.genes[0].schedule
+        return population.genes[0].schedule, population.best_fitness()
 

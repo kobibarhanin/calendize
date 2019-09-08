@@ -28,6 +28,10 @@ class Instance(ABC):
         self.event_index = index
 
 
+# class RandomInstance(Instance):
+#     def __init__(self, title, description, duration, instance_id=None) -> None:
+#         super().__init__(title, description, start_time, end_time, instance_id, colorId='#a4bdfc')
+
 class GoogleInstance(Instance):
 
     def __init__(self, title, description, start_time, end_time, instance_id=None, colorId=None) -> None:

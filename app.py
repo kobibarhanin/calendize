@@ -151,6 +151,10 @@ def get_instances():
     anchor_instances.pop(len(anchor_instances)-1)
     floating_instances = request.args.get('_floating_instances').split(",")
     floating_instances.pop(len(floating_instances)-1)
+    opportune_instances = request.args.get('_opportune_instances').split(",")
+    opportune_instances.pop()
+    routine_instances = request.args.get('_routine_instances').split("|")
+    routine_instances.pop()
     algorithm = request.args.get('_algorithm')
 
     print(f'* Calculating optimal schedule using: {algorithm} - from: {str(start_date) },to: {str(end_date)}')
@@ -161,15 +165,23 @@ def get_instances():
     service = googleapiclient.discovery.build(
         API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
-    data = main.run(start_date=start_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-                    end_date=end_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-                    anchor_instances=anchor_instances,
-                    floating_instances=floating_instances,
-                    algorithm=algorithm,
-                    service=service)
+    data, result = main.run(start_date=start_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                            end_date=end_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                            anchor_instances=anchor_instances + opportune_instances,
+                            floating_instances=floating_instances,
+                            algorithm=algorithm,
+                            service=service)
 
-    print('deploying solution')
-    print(data)
+    if not result:
+        print('unable to allocate opportunity, recalculating')
+        data, result = main.run(start_date=start_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                                end_date=end_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                                anchor_instances=anchor_instances,
+                                floating_instances=floating_instances,
+                                algorithm=algorithm,
+                                service=service)
+
+    print(f'Deploying solution \n {data}')
     return jsonify(data)
 
 

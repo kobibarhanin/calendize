@@ -54,16 +54,19 @@ def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anch
     #             floating_events[instance.title]=evnt.FloatingEvent(instance.title,instance.description,[instance],instance.colorId)
     #             events.append(floating_events[instance.title])
 
-
     # === Section 3 (Calculate): Use some engine to build an optimal schedule === #
     if algorithm == 'Genetic Algorithm':
         engine = eng.GeneticEngine(events, population_size=100, elitism_factor=0.2, mutation_rate=0.2, generations=20)
+        data, best = engine.run()
+        result = True if best == 0 else False
     elif algorithm == 'Simulated Annealing':
         engine = eng.SimulatedAnnealingEngine(events)
+        data = engine.run()
+        result = None
     else:
         raise Exception(f'undefined algorithm: {algorithm}')
 
-    return engine.run().to_json()
+    return data.to_json(), result
 
     # === Section 4 (Upload): Upload schedule to source (GUI, Calendar) === #
 

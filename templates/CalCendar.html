@@ -2,6 +2,7 @@
 <html>
 <head>
 	<meta charset='utf-8' />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 	<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
 	<script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -30,44 +31,48 @@
 			</div>
 		</div>
 
-		<div class="ui form" id="datepicker" style="margin-bottom: 20px">
-			<div class="two fields">
+		<div class="ui form" id="datepicker" style="margin-bottom: 3%">
+			<h3> Please specify a time range for optimization, and click fetch to get google calendar events:</h3>
+			<div class="three fields">
 				  <div class="field">
-					<label>Start date</label>
 					<div class="ui calendar" id="rangestart">
 					  <div class="ui input left icon">
 						<i class="calendar icon"></i>
-						<input type="text" placeholder="Start">
+						<input type="text" placeholder="From">
 					  </div>
 					</div>
 				  </div>
 				  <div class="field">
-					<label>End date</label>
 					<div class="ui calendar" id="rangeend">
 					  <div class="ui input left icon">
 						<i class="calendar icon"></i>
-						<input type="text" placeholder="End">
+						<input type="text" placeholder="To">
 					  </div>
 					</div>
 				  </div>
+				<div class="field">
+					<button id="fetch_button" class="ui button primary">Fetch events</button>
+					<button id="dev_button" class="ui button secondary">dev</button>
+
+				</div>
+				<div class="field">
+				</div>
 			</div>
-			<button id="fetch_button" class="ui button">Fetch events</button>
-			<button id="dev_button" class="ui button">dev</button>
 		</div>
 
-		<div id='calendar'></div>
+		<div id='calendar' style="max-width: none"></div>
 
 	</div>
 
 	<div class="ui container">
 		<h2> Events configurations</h2>
 
-        <div class="ui container message" style="margin-bottom: 30px; border: solid #3a87ad">
-			<div class="ui message" style="margin: auto">
-				<h3>Events:</h3>
+        <div style="margin-bottom: 30px;">
+			<div class="" style="margin: auto">
+				<h3>Please assign events you wish to optimize one of the classes: anchor, float, opportune, routine</h3>
 			</div>
 
-			<table id="events_table" class="event_table ui message">
+			<table id="events_table" class="ui selectable celled black table">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -81,18 +86,18 @@
 				</tbody>
 			</table>
 
-            <div class="ui message" style="margin: auto">
-				<button class="ui button" onclick="add_selected_to_table('anchor_table')">Add selected to anchor</button>
-				<button class="ui button" onclick="add_selected_to_table('floating_table')">Add selected to float</button>
-				<button class="ui button" onclick="add_selected_to_table('opportune_table')">Add selected to opportune</button>
+            <div style="margin: auto">
+				<button class="ui button blue" onclick="add_selected_to_table('anchor_table')">Add selected to anchor</button>
+				<button class="ui button green" onclick="add_selected_to_table('floating_table')">Add selected to float</button>
+				<button class="ui button red" onclick="add_selected_to_table('opportune_table')">Add selected to opportune</button>
 			</div>
 		</div>
 
-		<div class="ui container message" style="margin-bottom: 30px; border: solid #3a87ad; background-color: #034f84">
-			<div class="ui message" style="margin: auto">
+		<div  style="margin-bottom: 30px;">
+			<div class="ui " style="margin: auto">
 				<h3>Anchor Events:</h3>
 			</div>
-			<table id="anchor_table" class="event_table ui message">
+			<table id="anchor_table" class="ui selectable celled blue table">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -105,16 +110,16 @@
 				<tbody>
 				</tbody>
 			</table>
-            <div class="ui message" style="margin: auto">
-				<button class="ui button" onclick="remove_selected('anchor_table')">Remove selected</button>
+            <div style="margin: auto">
+				<button class="ui red basic button" onclick="remove_selected('anchor_table')">Remove selected</button>
 			</div>
 		</div>
 
-		<div class="ui container message" style="margin-bottom: 30px; border: solid #3a87ad; background-color: #82b74b">
-			<div class="ui message" style="margin: auto;">
+		<div style="margin-bottom: 30px;">
+			<div style="margin: auto;">
 				<h3>Floating Events:</h3>
 			</div>
-			<table id="floating_table" class="event_table ui message">
+			<table id="floating_table" class="ui selectable celled green table">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -127,16 +132,16 @@
 				<tbody>
 				</tbody>
 			</table>
-            <div class="ui message" style="margin: auto">
-				<button class="ui button" onclick="remove_selected('floating_table')">Remove selected</button>
+            <div style="margin: auto">
+				<button class="ui red basic button" onclick="remove_selected('floating_table')">Remove selected</button>
 			</div>
 		</div>
 
-		<div class="ui container message" style="margin-bottom: 30px; border: solid #3a87ad; background-color: #f7786b">
-			<div class="ui message" style="margin: auto">
+		<div style="margin-bottom: 30px;">
+			<div style="margin: auto">
 				<h3>Opportune Events:</h3>
 			</div>
-			<table id="opportune_table" class="event_table ui message">
+			<table id="opportune_table" class="ui selectable celled red table">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -149,14 +154,14 @@
 				<tbody>
 				</tbody>
 			</table>
-            <div class="ui message" style="margin: auto">
-				<button class="ui button" onclick="remove_selected('opportune_table')">Remove selected</button>
+            <div style="margin: auto">
+				<button class="ui red basic button" onclick="remove_selected('opportune_table')">Remove selected</button>
 			</div>
 		</div>
 
 
-		<div class="ui container message" style="margin-bottom: 30px; border: solid #3a87ad; background-color: #ffef96">
-			<div class="ui message" style="margin: auto">
+		<div style="margin-bottom: 30px; ">
+			<div style="margin: auto">
 				<h3>Routine Events:</h3>
 			</div>
 
@@ -186,11 +191,11 @@
 						</div>
 					</div>
 				</div>
-				  <div id="routine_button" class="ui submit button">Add</div>
+				  <div id="routine_button" class="ui submit yellow button">Add</div>
 			  </div>
 			</div>
 
-			<table id="routine_table" class="event_table">
+			<table id="routine_table" class="ui selectable celled yellow table">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -204,8 +209,8 @@
 				</tbody>
 			</table>
 
-            <div class="ui message" style="margin: auto">
-				<button class="ui button" onclick="remove_selected_routing()">Remove selected</button>
+            <div style="margin: auto">
+				<button class="ui red basic button" onclick="remove_selected_routing()">Remove selected</button>
 			</div>
 		</div>
 

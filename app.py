@@ -182,6 +182,7 @@ def get_instances():
                                 end_date=end_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                                 anchor_instances=anchor_instances,
                                 floating_instances=floating_instances,
+                                routine_instances=routine_instances,
                                 algorithm=algorithm,
                                 service=service)
 

@@ -54,22 +54,6 @@ def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anch
             events.append(evnt.FloatingEvent(name, name, rand_routine_instances, '#a4bdfc'))
 
 
-    # events = []
-    # floating_events = dict()
-    # for instance in instances:
-    #     pref = instance.title.split("-")[0]
-    #     if pref == "Anc":
-    #         instance.add_event_index(len(events))
-    #         events.append(evnt.AnchorEvent(instance.title,instance.description,[instance],instance.colorId))
-    #     elif pref == "Flt":
-    #         if instance.title in floating_events:
-    #             instance.add_event_index(floating_events[instance.title].instances[0].event_index)
-    #             floating_events[instance.title].add_new_instance(instance.start_time,instance.end_time,instance.event_index,instance.instance_id)
-    #         else:
-    #             instance.add_event_index(len(events))
-    #             floating_events[instance.title]=evnt.FloatingEvent(instance.title,instance.description,[instance],instance.colorId)
-    #             events.append(floating_events[instance.title])
-
     # === Section 3 (Calculate): Use some engine to build an optimal schedule === #
     if algorithm == 'Genetic Algorithm':
         engine = eng.GeneticEngine(events, population_size=100, elitism_factor=0.2, mutation_rate=0.2, generations=20)

@@ -36,13 +36,14 @@ class RandomInstance(Instance):
         end_time = datetime.fromtimestamp(end_time)
         length = timedelta(hours=hours, minutes=minutes)
         end_time -= length
-        # delta = start_time - end_time
 
         self.start_time = self.random_date(start_time, end_time)
-        while not self.start_time.hour in range(6, 24):
-            self.start_time = self.random_date(start_time, end_time)
-
         self.end_time = self.start_time + length
+
+        while not (self.start_time.hour in range(6, 24) and self.end_time.hour in range(6, 24)):
+            self.start_time = self.random_date(start_time, end_time)
+            self.end_time = self.start_time + length
+
 
 
     def random_date(self, start, end):

@@ -50,8 +50,14 @@ function initiate(events,defaultDate) {
     navLinks: true, // can click day/week names to navigate views
     editable: true,
     eventLimit: true, // allow "more" link when too many events
-    events: events
-  });
+    events: events,
+
+
+    });
+
+    if (window.innerWidth < 768 ) {
+        $('#calendar').fullCalendar('changeView', 'agendaDay');
+    }
 
     $("#dev_button").unbind('click').click(function(){
         for (var i=0; i< instances_golbal.length; i++){
@@ -79,6 +85,7 @@ function initiate(events,defaultDate) {
     });
 
     $("#calc_button").unbind('click').click(function(){
+        $("#calc_button").addClass("loading");
         $.getJSON("/calculate",
                  {
                      _startDate: startDate.getTime(),
@@ -91,8 +98,9 @@ function initiate(events,defaultDate) {
                  },
                 function(instances){
                     $('#calendar').empty();
-                    $("#datepicker").after("<div id='calendar'></div>");
+                    $("#datepicker").after("<div id='calendar' style='max-width: none'></div>");
                     calendar_instances = instances
+                    $("#calc_button").removeClass("loading");
                     initiate(instances,endDate.toISOString().split("T")[0]);
                     $("html, body").animate({ scrollTop: 0 }, "slow");
           });
@@ -106,7 +114,7 @@ function initiate(events,defaultDate) {
              },
             function(instances){
                 $('#calendar').empty();
-                $("#datepicker").after("<div id='calendar'></div>");
+                $("#datepicker").after("<div id='calendar' style='max-width: none'></div>");
 
 
                 instances_golbal=instances;

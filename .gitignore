@@ -6,6 +6,4 @@ venv
 credentials.json
 token.json
 test_schedule.json
-TODO.txt
 .DS_Store
-client_secret.json

@@ -14,6 +14,7 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.min.js'></script>
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 	<link href="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.css" rel="stylesheet" type="text/css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
 
 
 	<link href='static/CalCendar.css?version={{version}}' rel='stylesheet' />
@@ -54,8 +55,25 @@
 		</div>
 
 		<div id='calendar' style="max-width: none"></div>
-
 	</div>
+
+    <div id = "calc_report" class="ui container" style="margin-bottom: 3%;">
+		<h2> Calculation report </h2>
+		<form class="ui form">
+			<div class="inline fields">
+				<div class="two wide field">
+					<label>Clashes</label>
+					<input id="clashes_res" type="text">
+				</div>
+				<div class="two wide field">
+					<label>Iterations</label>
+					<input id="iterations_res" type="text">
+				</div>
+			</div>
+
+		</form>
+		<canvas id="myChart"></canvas>
+    </div>
 
 	<div class="ui container">
 		<h2> Events configurations</h2>
@@ -239,17 +257,89 @@
             <div class="ui container" style="margin-bottom: 3%; border: solid #3a87ad">
                 <div class="ui message" style="margin: auto">
                     <h3>Select Algorithm:</h3>
-                    <select id="dd_algo" class="ui dropdown" style="width: 30%">
-                      <option value="ga">Genetic Algorithm</option>
-                      <option value="sa">Simulated Annealing</option>
+                    <select id="dd_algo" name="dd_algo" class="ui dropdown" style="width: 30%">
+                      <option selected="selected"> - </option>
+                      <option value="Genetic Algorithm">Genetic Algorithm</option>
+                      <option value="Simulated Annealing">Simulated Annealing</option>
                     </select>
+					<div id="ga_conf_form" style="margin-top:1%;">
+						<form class="ui form">
+							<div class="inline fields" style="margin-top:2%;">
+								<div class="four wide field">
+									<label>Population Size</label>
+									<input id="pop_size" type="text" value="30">
+								</div>
+								<div class="four wide field">
+									<label>Generations</label>
+									<input id="gen_num" type="text" value="60">
+								</div>
+								<div class="four wide field">
+									<label>Mutation Factor</label>
+									<input id="mut_fact" type="text" value="0.3">
+								</div>
+								<div class="four wide field">
+									<label>Elitism Factor</label>
+									<input id="elit_fact" type="text" value="0.2">
+								</div>
+							</div>
+							<div class="inline fields" style="margin-top:2%;">
+								<div class="ui slider four wide field checkbox">
+								  <input id="adaptive" type="checkbox" name="adaptive">
+								  <label>Adaptive</label>
+								</div>
+								<div class="four wide field">
+									<label>adaptive lookback</label>
+									<input id="adaptive_lookback" type="text" value="5">
+								</div>
+							</div>
+							<div class="inline fields" style="margin-top:2%;">
+								<div class="ui four wide field slider checkbox">
+								  <input id="enable_plague" type="checkbox" name="enable_plague">
+								  <label>Plague</label>
+								</div>
+								<div class="four wide field">
+									<label>Plague lookback</label>
+									<input id="plague_lookback" type="text" value="10">
+								</div>
+								<div class="four wide field">
+									<label>Plague effect</label>
+									<input id="plague_effect" type="text" value="1">
+								</div>
+							</div>
+						</form>
+					</div>
+					<div id="sa_conf_form" style="margin-top:1%;">
+						<form class="ui form">
+							<div class="inline fields">
+								<div class="four wide field">
+									<label>Iteration</label>
+									<input id="sa_iterations" type="text" value="100">
+								</div>
+							</div>
+							<div class="inline fields">
+									<div class="ui slider four wide field checkbox">
+									  <input id="adaptive_sa" type="checkbox" name="adaptive">
+									  <label>Adaptive</label>
+									</div>
+									<div class="four wide field">
+										<label>adaptive lookback</label>
+										<input id="adaptive_lookback_sa" type="text" value="5">
+									</div>
+							</div>
+						</form>
+					</div>
                 </div>
-            </div>
+
+			</div>
+
+
+
         </div>
 
 	</div>
 
 	<button id="calc_button" class="ui button big" style="margin-inline-start: 45%;margin-bottom: 30px;">Optimize!</button>
+
 
 </body>
 </html>

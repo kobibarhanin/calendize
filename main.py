@@ -13,7 +13,7 @@ def fetch(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', se
 
 
 def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anchor_instances=None,
-        floating_instances=None, routine_instances=None, algorithm = 'Genetic Algorithm',service=None):
+        floating_instances=None, routine_instances=None, algorithm='Genetic Algorithm', service=None, options=None):
     # === Section 1 (Source): Read data from source === #
     google_source = src.GoogleO2AuthSource(service)
     instances, raw_instances = google_source.get_instances(start_date, end_date)
@@ -56,17 +56,62 @@ def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anch
 
     # === Section 3 (Calculate): Use some engine to build an optimal schedule === #
     if algorithm == 'Genetic Algorithm':
-        engine = eng.GeneticEngine(events, population_size=100, elitism_factor=0.2, mutation_rate=0.2, generations=20)
+
+        run_args = {
+            "population_size": 40,
+            "elitism_factor": 0.1,
+            "mutation_rate": 0.3,
+            "generations": 30,
+            "adaptive": True,
+            "adaptive_lookback": 5,
+            "enable_plague": True,
+            "plague_lookback": 10,
+            "plague_effect": 1,
+        }
+
+        if options:
+            run_args = options
+
+        engine = eng.GeneticEngine(events,
+                                   population_size=run_args["population_size"],
+                                   elitism_factor=run_args["elitism_factor"],
+                                   mutation_rate=run_args["mutation_rate"],
+                                   generations=run_args["generations"],
+                                   adaptive=run_args["adaptive"],
+                                   adaptive_lookback=run_args["adaptive_lookback"],
+                                   enable_plague=run_args["enable_plague"],
+                                   plague_lookback=run_args["plague_lookback"],
+                                   plague_effect=run_args["plague_effect"],
+                                   )
         data, best = engine.run()
         result = True if best == 0 else False
     elif algorithm == 'Simulated Annealing':
-        engine = eng.SimulatedAnnealingEngine(events)
-        data = engine.run()
+
+        run_args = {
+            "iterations": 100,
+            "adaptive": True,
+            "adaptive_lookback": 5,
+        }
+
+        if options:
+            run_args = options
+
+        engine = eng.SimulatedAnnealingEngine(events,
+                                              iterations=run_args["iterations"],
+                                              adaptive=run_args["adaptive"],
+                                              adaptive_lookback=run_args["adaptive_lookback"]
+                                              )
+        data, best = engine.run()
         result = None
     else:
         raise Exception(f'undefined algorithm: {algorithm}')
 
-    return data.to_json(), result
+    print(f'algorithm result layout:\n{engine.iteration_value}')
+
+    jsoned_data = data.to_json()
+    jsoned_data.append(engine.iteration_value)
+    jsoned_data.append(engine.best_result)
+    return jsoned_data, result
 
     # === Section 4 (Upload): Upload schedule to source (GUI, Calendar) === #
 

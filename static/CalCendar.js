@@ -9,8 +9,9 @@ opportune_instances=[];
 routine_instances=[];
 
 calendar_instances=[];
-
-
+options=null;
+chart_data = null;
+best_result = null;
 
 $(document).ready(function () {
     initiate([], new Date().toISOString().split("T")[0], true)
@@ -70,6 +71,47 @@ function initiate(events, defaultDate, first) {
 
     }
 
+    if (chart_data){
+        $("#calc_report").show()
+        $("#clashes_res").val(best_result)
+        $("#iterations_res").val(chart_data.length)
+
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var labels = [];
+        for (var i = 0; i < chart_data.length; i++) {
+           labels.push(i);
+        }
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Schedule Clashes',
+                data: chart_data,
+                borderColor: "#3e95cd",
+                fill: false
+            }]
+        },
+    });
+    }else{
+        $("#calc_report").hide();
+    }
+
+    $("#ga_conf_form").hide()
+    $("#sa_conf_form").hide()
+
+    $('#dd_algo').change(function () {
+        if ($(this).val() == "Genetic Algorithm"){
+            $("#sa_conf_form").hide()
+            $("#ga_conf_form").show()
+        }
+        if ($(this).val() == "Simulated Annealing"){
+            $("#ga_conf_form").hide()
+            $("#sa_conf_form").show()
+        }
+    });
+
+
     $("#dev_button").unbind('click').click(function(){
         for (var i=0; i< instances_golbal.length; i++){
             title = instances_golbal[i]['title']
@@ -95,8 +137,43 @@ function initiate(events, defaultDate, first) {
 
     });
 
+
+
     $("#calc_button").unbind('click').click(function(){
+        chart_data=null;
         $("#calc_button").addClass("loading");
+        if ($("#dd_algo option:selected").text() == "Genetic Algorithm"){
+            options = "population_size:"+$('#pop_size').val()+","
+            options += "elitism_factor:"+$('#elit_fact').val()+","
+            options += "mutation_rate:"+$('#mut_fact').val()+","
+            options += "generations:"+$('#gen_num').val()
+            if ($('#adaptive').is(':checked')){
+                options += ",adaptive:True"
+                options += ",adaptive_lookback:"+$('#adaptive_lookback').val()
+            } else {
+                options += ",adaptive:"
+                options += ",adaptive_lookback:"+$('#adaptive_lookback').val()
+            }
+            if ($('#enable_plague').is(':checked')){
+                options += ",enable_plague:True"
+                options += ",plague_lookback:"+$('#plague_lookback').val()
+                options += ",plague_effect:"+$('#plague_effect').val()
+            } else {
+                options += ",enable_plague:"
+                options += ",plague_lookback:"+$('#plague_lookback').val()
+                options += ",plague_effect:"+$('#plague_effect').val()
+            }
+        }
+        if ($("#dd_algo option:selected").text() == "Simulated Annealing"){
+            options = "iterations:"+$('#sa_iterations').val()
+            if ($('#adaptive_sa').is(':checked')){
+                options += ",adaptive:True"
+                options += ",adaptive_lookback:"+$('#adaptive_lookback_sa').val()
+            } else {
+                options += ",adaptive:"
+                options += ",adaptive_lookback:"+$('#adaptive_lookback_sa').val()
+            }
+        }
         $.getJSON("/calculate",
                  {
                      _startDate: startDate.getTime(),
@@ -105,11 +182,15 @@ function initiate(events, defaultDate, first) {
                      _floating_instances:arrayToString(floating_instances),
                      _opportune_instances:arrayToString(opportune_instances),
                      _routine_instances:routienArrayToString(routine_instances),
-                     _algorithm: $("#dd_algo option:selected").text()
+                     _algorithm: $("#dd_algo option:selected").text(),
+                     _options: options
                  },
                 function(instances){
                     $('#calendar').empty();
                     $("#datepicker").after("<div id='calendar' style='max-width: none'></div>");
+                    console.log(instances[instances.length-1])
+                    best_result = instances.pop()
+                    chart_data = instances.pop()
                     calendar_instances = instances
                     $("#calc_button").removeClass("loading");
                     initiate(instances,endDate.toISOString().split("T")[0], false);

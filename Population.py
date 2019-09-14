@@ -65,6 +65,10 @@ class Population:
                     instances.append(p2.schedule.instances[i])
             gene.set_schedule(scdule.Schedule(instances))
 
+    def plague(self, size):
+        for i in range(0,size):
+            self.genes.pop(0)
+        self.generate(size)
 
     def mutation(self, mutation_rate):
         for gene in self.genes:
@@ -72,7 +76,7 @@ class Population:
                 gene.mutate(self.events)
 
     @classmethod
-    def combine (cls,elite,common):
+    def combine (cls, elite, common):
         population = Population(elite.events)
         population.set_genes(elite.genes)
         population.genes += common.genes

@@ -143,6 +143,19 @@ def fetch_instances():
     return jsonify(data)
 
 
+def coerce(x):
+    try:
+        res = int(x)
+    except Exception:
+        try:
+            res = float(x)
+        except Exception:
+            try:
+                res = bool(x)
+            except Exception:
+                raise ValueError("failed to coerce str to int or float")
+    return res
+
 @app.route("/calculate")
 def get_instances():
     start_date = datetime.fromtimestamp(int(request.args.get('_startDate'))/1000.0).date()
@@ -155,12 +168,20 @@ def get_instances():
     opportune_instances.pop()
     routine_instances = request.args.get('_routine_instances').split(",")
     routine_instances.pop()
-
-
-
     algorithm = request.args.get('_algorithm')
+    options_raw = request.args.get('_options')
+    options = None
 
-    print(f'* Calculating optimal schedule using: {algorithm} - from: {str(start_date) },to: {str(end_date)}')
+    if options_raw:
+        options_raw = options_raw.split(",")
+        options = {}
+        for option_raw in options_raw:
+            key, value = option_raw.split(":")
+            options[key] = coerce(value)
+
+    print(f'* Calculating optimal schedule using: {algorithm}, '
+          f'from: {str(start_date) },to: {str(end_date)}, '
+          f'with arguments: {options}')
 
     # Load credentials from the session.
     credentials = google.oauth2.credentials.Credentials(
@@ -174,19 +195,20 @@ def get_instances():
                             floating_instances=floating_instances,
                             routine_instances=routine_instances,
                             algorithm=algorithm,
-                            service=service)
+                            service=service,
+                            options=options)
 
-    if not result:
-        print('unable to allocate opportunity, recalculating')
+    if opportune_instances and not result:
+        print('* Failed to optimize, trying without opportune_instances')
         data, result = main.run(start_date=start_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                                 end_date=end_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                                 anchor_instances=anchor_instances,
                                 floating_instances=floating_instances,
                                 routine_instances=routine_instances,
                                 algorithm=algorithm,
-                                service=service)
-
-    print(f'Deploying solution \n {data}')
+                                service=service,
+                                options=options)
+    print(f'Deploying solution: \n {data}')
     return jsonify(data)
 
 
@@ -199,3 +221,5 @@ if __name__ == '__main__':
     # Specify a hostname and port that are set as a valid redirect URI
     # for your API project in the Google API Console.
     app.run('localhost', 8080, debug=True)
+
+

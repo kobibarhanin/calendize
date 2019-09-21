@@ -62,11 +62,12 @@ def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anch
             "elitism_factor": 0.1,
             "mutation_rate": 0.3,
             "generations": 30,
+            "selection_type": 0,
             "adaptive": True,
             "adaptive_lookback": 5,
-            "enable_plague": True,
-            "plague_lookback": 10,
-            "plague_effect": 1,
+            "enable_purge": True,
+            "purge_lookback": 10,
+            "purge_effect": 1,
         }
 
         if options:
@@ -77,11 +78,12 @@ def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anch
                                    elitism_factor=run_args["elitism_factor"],
                                    mutation_rate=run_args["mutation_rate"],
                                    generations=run_args["generations"],
+                                   selection_type=run_args["selection_type"],
                                    adaptive=run_args["adaptive"],
                                    adaptive_lookback=run_args["adaptive_lookback"],
-                                   enable_plague=run_args["enable_plague"],
-                                   plague_lookback=run_args["plague_lookback"],
-                                   plague_effect=run_args["plague_effect"],
+                                   enable_purge=run_args["enable_purge"],
+                                   purge_lookback=run_args["purge_lookback"],
+                                   purge_effect=run_args["purge_effect"],
                                    )
         data, best = engine.run()
         result = True if best == 0 else False
@@ -102,14 +104,16 @@ def run(start_date='2018-12-23T08:00:00Z', end_date='2018-12-29T22:00:00Z', anch
                                               adaptive_lookback=run_args["adaptive_lookback"]
                                               )
         data, best = engine.run()
-        result = None
+        result = engine.best_result
     else:
         raise Exception(f'undefined algorithm: {algorithm}')
 
-    print(f'algorithm result layout:\n{engine.iteration_value}')
+    print(f'*** Result layout: {engine.iteration_value} ***')
 
     jsoned_data = data.to_json()
     jsoned_data.append(engine.iteration_value)
+    jsoned_data.append(engine.adapted_timestamps)
+    jsoned_data.append(engine.purge_timestamps)
     jsoned_data.append(engine.best_result)
     return jsoned_data, result
 

@@ -1,7 +1,7 @@
 import Gene as gn
 import Schedule as scdule
 import random
-import numpy.random as np
+import numpy as np
 
 class Population:
 
@@ -9,6 +9,7 @@ class Population:
     def __init__(self, events) -> None:
         self.events = events
         self.genes = []
+        self.calculate_fitness()
 
 
     def set_genes(self,genes):
@@ -39,33 +40,80 @@ class Population:
         elitism_abs = int(len(self.genes)*elitism_factor+1)
         elite = Population(self.events).set_genes(self.genes[:elitism_abs])
         rest = Population(self.events).set_genes(self.genes[elitism_abs:])
-        return elite,rest
+        return elite, rest
 
+    def wheel_selection(self, elite_population):
+        worst_fitness = self.genes[len(self.genes)-1].fitness
+        population = elite_population.genes + self.genes
+        fitness_wheel = []
+        wheel_total = 0
+        for gene in population:
+            genval = worst_fitness - gene.fitness
+            wheel_total += genval
+            fitness_wheel.append(genval)
 
-    def mate(self,elite_population):
+        p1_raw = random.randint(0, wheel_total)
+        p2_raw = random.randint(0, wheel_total)
+
+        p1, p2 = (0, 0)
+        while p1_raw > 0:
+            p1_raw -= fitness_wheel[p1]
+            p1 += 1
+        while p2_raw > 0:
+            p2_raw -= fitness_wheel[p2]
+            p2 += 1
+
+        return p1, p2
+
+    def mate(self, elite_population, selection_type):
+
         for gene in self.genes:
 
-            # TODO - oop design here!
-
-            # selection - from elite population
-
-            self.genes.sort(key=lambda x: x.fitness, reverse=False)
-            p1,p2 = np.choice(elite_population.genes,2)
+            p1, p2 = None, None
+            # Fully Random
+            if selection_type == 0:
+                p1, p2 = np.random.choice(elite_population.genes + self.genes, 2)
+            # Elitistic Random
+            elif selection_type == 1:
+                p1, p2 = np.random.choice(elite_population.genes, 2)
+            # Wheel Selection
+            elif selection_type == 2:
+                i1, i2 = self.wheel_selection(elite_population)
+                total_pop = elite_population.genes + self.genes
+                p1 = total_pop[i1]
+                p2 = total_pop[i2]
+            # Elitistic Exponential
+            elif selection_type == 3:
+                i1 = self.generate_idx_exp(len(elite_population.genes + self.genes))
+                i2 = self.generate_idx_exp(len(elite_population.genes + self.genes))
+                total_pop = elite_population.genes + self.genes
+                p1 = total_pop[i1]
+                p2 = total_pop[i2]
 
             # crossover - by events: take some instances from one parent and some from the other
-
             p1.schedule.instances.sort(key=lambda x: x.title, reverse=True)
             p2.schedule.instances.sort(key=lambda x: x.title, reverse=True)
 
             instances = list()
             for i in range(0, len(self.events)):
-                if random.randint(0,100) > 50:
+                if random.randint(0, 100) > 50:
                     instances.append(p1.schedule.instances[i])
                 else:
                     instances.append(p2.schedule.instances[i])
+
             gene.set_schedule(scdule.Schedule(instances))
 
-    def plague(self, size):
+    @staticmethod
+    def generate_idx_exp (M):
+        proba = random.random()
+        max = 0
+        for i in range(1, M + 1):
+            max += (1 / 2) ** i
+            if (proba <= max):
+                return i - 1
+        return Population.generate_idx_exp(M)
+
+    def purge(self, size):
         for i in range(0,size):
             self.genes.pop(0)
         self.generate(size)

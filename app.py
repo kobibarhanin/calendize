@@ -208,7 +208,8 @@ def get_instances():
                                 algorithm=algorithm,
                                 service=service,
                                 options=options)
-    print(f'Deploying solution: \n {data}')
+
+    print(f'*** Deploying instances: { [instance for instance in data] } ***')
     return jsonify(data)
 
 

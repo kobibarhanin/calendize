@@ -28,25 +28,6 @@ class Source(ABC):
         pass
 
 
-# class GoogleO2AuthSource(Source):
-#
-#     def __init__(self) -> None:
-#         super.__init__()
-#
-#     def get_instances(self, from_time, to_time):
-#         return super().get_instances(from_time, to_time)
-#
-#     def get_raw_instances(self, from_time, to_time):
-#         super().get_raw_instances(from_time, to_time)
-#
-#     def parse_instances(self, raw_events):
-#         super().parse_instances(raw_events)
-#
-#     def upload_instance(self, instance):
-#         super().upload_instance(instance)
-#
-#     def clear(self, instances):
-#         super().clear(instances)
 
 class GoogleO2AuthSource(Source):
 

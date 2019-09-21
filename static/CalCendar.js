@@ -1,4 +1,5 @@
 jQuery.ajaxSettings.traditional = true;
+Chart.defaults.global.legend.display = false;
 
 instances_golbal = null;
 instances_golbal_mapping = {};
@@ -12,9 +13,25 @@ calendar_instances=[];
 options=null;
 chart_data = null;
 best_result = null;
+adapted_timestamps = [];
+purge_timestamps = [];
+myChart = null;
+
+
+function clean(){
+    calendar_instances=[];
+    options=null;
+    chart_data = null;
+    best_result = null;
+    adapted_timestamps = [];
+    purge_timestamps = [];
+
+}
+
 
 $(document).ready(function () {
     initiate([], new Date().toISOString().split("T")[0], true)
+    $('#main_body').hide();
 });
 
 // '2018-12-26'
@@ -22,7 +39,7 @@ startDate=new Date(2018, 11, 23, 0, 0, 0, 0);
 endDate=new Date(2018, 11, 29, 0, 0, 0, 0);
 
 function initiate(events, defaultDate, first) {
-
+$('#main_body').show();
     if (first){
         $("#routine_populated").hide()
         $("#opportune_populated").hide()
@@ -49,7 +66,6 @@ function initiate(events, defaultDate, first) {
     $('#routine_from_calendar').calendar();
 
     $('#routine_to_calendar').calendar();
-
     $('#calendar').fullCalendar({
     header: {
       left: 'prev,next today',
@@ -62,7 +78,7 @@ function initiate(events, defaultDate, first) {
     editable: true,
     eventLimit: true, // allow "more" link when too many events
     events: events,
-
+    height: 700
 
     });
 
@@ -74,26 +90,63 @@ function initiate(events, defaultDate, first) {
     if (chart_data){
         $("#calc_report").show()
         $("#clashes_res").val(best_result)
+        $("#score").val((((calendar_instances.length-best_result)/calendar_instances.length)*100).toFixed(1)+" %")
+        if (best_result==0){
+             $("#score").css("background-color","greenyellow")
+        }
+        else {
+             $("#score").css("background-color","")
+        }
         $("#iterations_res").val(chart_data.length)
+
 
         var ctx = document.getElementById("myChart").getContext('2d');
         var labels = [];
         for (var i = 0; i < chart_data.length; i++) {
            labels.push(i);
         }
-        var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
+
+
+        var pointBackgroundColors = [];
+
+        clashes = {
                 label: 'Schedule Clashes',
                 data: chart_data,
                 borderColor: "#3e95cd",
-                fill: false
-            }]
-        },
-    });
-    }else{
+                fill: false,
+                pointBackgroundColor: pointBackgroundColors,
+                pointBorderColor: pointBackgroundColors,
+                pointRadius: 7,
+                pointHoverRadius: 7
+        }
+
+
+        datasets = []
+        datasets.push(clashes)
+        data = {labels: labels, datasets:datasets}
+
+        if(myChart){
+            myChart.destroy();
+        }
+
+        myChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        });
+
+
+        for (i = 0; i < chart_data.length; i++) {
+            if (adapted_timestamps.includes(i)) {
+                pointBackgroundColors.push("#ff0000");
+            } else if (purge_timestamps.includes(i)) {
+                pointBackgroundColors.push("#00d605");
+            } else {
+                pointBackgroundColors.push("#3e95cd");
+            }
+        }
+        myChart.update()
+    }
+    else{
         $("#calc_report").hide();
     }
 
@@ -140,6 +193,7 @@ function initiate(events, defaultDate, first) {
 
 
     $("#calc_button").unbind('click').click(function(){
+        clean()
         chart_data=null;
         $("#calc_button").addClass("loading");
         if ($("#dd_algo option:selected").text() == "Genetic Algorithm"){
@@ -147,6 +201,7 @@ function initiate(events, defaultDate, first) {
             options += "elitism_factor:"+$('#elit_fact').val()+","
             options += "mutation_rate:"+$('#mut_fact').val()+","
             options += "generations:"+$('#gen_num').val()
+            options += ",selection_type:"+$('#dd_selection_ga option:selected').val()
             if ($('#adaptive').is(':checked')){
                 options += ",adaptive:True"
                 options += ",adaptive_lookback:"+$('#adaptive_lookback').val()
@@ -154,14 +209,14 @@ function initiate(events, defaultDate, first) {
                 options += ",adaptive:"
                 options += ",adaptive_lookback:"+$('#adaptive_lookback').val()
             }
-            if ($('#enable_plague').is(':checked')){
-                options += ",enable_plague:True"
-                options += ",plague_lookback:"+$('#plague_lookback').val()
-                options += ",plague_effect:"+$('#plague_effect').val()
+            if ($('#enable_purge').is(':checked')){
+                options += ",enable_purge:True"
+                options += ",purge_lookback:"+$('#purge_lookback').val()
+                options += ",purge_effect:"+$('#purge_effect').val()
             } else {
-                options += ",enable_plague:"
-                options += ",plague_lookback:"+$('#plague_lookback').val()
-                options += ",plague_effect:"+$('#plague_effect').val()
+                options += ",enable_purge:"
+                options += ",purge_lookback:"+$('#purge_lookback').val()
+                options += ",purge_effect:"+$('#purge_effect').val()
             }
         }
         if ($("#dd_algo option:selected").text() == "Simulated Annealing"){
@@ -187,10 +242,13 @@ function initiate(events, defaultDate, first) {
                  },
                 function(instances){
                     $('#calendar').empty();
-                    $("#datepicker").after("<div id='calendar' style='max-width: none'></div>");
+                    $("#calendar_header").after("<div id='calendar' style='max-width: none; margin-top:2%'></div>");
                     console.log(instances[instances.length-1])
                     best_result = instances.pop()
+                    adapted_timestamps = instances.pop()
+                    purge_timestamps = instances.pop()
                     chart_data = instances.pop()
+
                     calendar_instances = instances
                     $("#calc_button").removeClass("loading");
                     initiate(instances,endDate.toISOString().split("T")[0], false);
@@ -199,6 +257,7 @@ function initiate(events, defaultDate, first) {
     });
 
     $("#fetch_button").unbind('click').click(function(){
+        clean()
         $.getJSON("/fetch",
              {
                 _startDate: startDate.getTime(),
@@ -206,7 +265,7 @@ function initiate(events, defaultDate, first) {
              },
             function(instances){
                 $('#calendar').empty();
-                $("#datepicker").after("<div id='calendar' style='max-width: none'></div>");
+                $("#calendar_header").after("<div id='calendar' style='max-width: none; margin-top:2%'></div>");
 
 
                 instances_golbal=instances;

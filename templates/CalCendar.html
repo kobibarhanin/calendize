@@ -17,17 +17,18 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
 
 
+
 	<link href='static/CalCendar.css?version={{version}}' rel='stylesheet' />
 	<script src="static/CalCendar.js?version={{version}}"></script>
 
 </head>
 <body>
-	<div class="ui container" style="padding-top: 3%; padding-bottom: 3%">
-		<img src="static/calendize.png?lastmod={{version}}" alt="Calendize" style="width:80%;height:30%; ">
 
-		<div class="ui form" id="datepicker" style="margin-bottom: 3%; margin-top: 3%">
+	<div class="ui container" style="width:70%">
+		<img src="static/calendize.png?lastmod={{version}}" alt="Calendize" style="width:80%;height:30%; ">
+		<div class="ui form" id="datepicker" style="margin-top: 3%">
 			<h3> Please specify a time range for optimization, and click fetch to get google calendar events:</h3>
-			<div class="three fields">
+			<div class="three fields" >
 				  <div class="field">
 					<div class="ui calendar" id="rangestart">
 					  <div class="ui input left icon">
@@ -53,14 +54,27 @@
 				</div>
 			</div>
 		</div>
-
-		<div id='calendar' style="max-width: none"></div>
+	</div>
+	<div id="main_body">
+	<div class="ui container" style="width:70%">
+		<h2 id="calendar_header" class="ui horizontal divider header" style="margin-bottom: 3%; margin-top:3%">
+			<i class="calendar icon"></i>
+			Your Calendar
+		</h2>
+		<div id='calendar' style="max-width: none; margin-top:2%"></div>
 	</div>
 
-    <div id = "calc_report" class="ui container" style="margin-bottom: 3%;">
-		<h2> Calculation report </h2>
+    <div id = "calc_report" class="ui container" style="margin-top: 1%; width:70%;">
+		<h2 class="ui horizontal divider header" style="margin-bottom: 1%;">
+			<i class="chart line icon"></i>
+  			Calculation report
+		</h2>
 		<form class="ui form">
 			<div class="inline fields">
+				<div class="two wide field">
+					<label>Score</label>
+					<input id="score" type="text">
+				</div>
 				<div class="two wide field">
 					<label>Clashes</label>
 					<input id="clashes_res" type="text">
@@ -73,19 +87,31 @@
 
 		</form>
 		<canvas id="myChart"></canvas>
+		<div class="ui container" style="margin-top: 1%">
+			<h3 class="ui header">Legend:</h3>
+			<div class="ui fields">
+				<div style="margin-right: 1%"><i class="circle blue icon"></i>Clashes</div>
+				<div style="margin-right: 1%"><i class="circle green icon"></i>Adaptations</div>
+				<div style="margin-right: 1%"><i class="circle red icon"></i>Purging</div>
+
+
+			</div>
+		</div>
     </div>
 
-	<div class="ui container">
-		<h2> Events configurations</h2>
-
+	<div class="ui container" style="margin-top: 1%">
+		<h2 class="ui horizontal divider header" style="margin-bottom: 3%;">
+			<i class="sitemap icon"></i>
+  			Events classification
+		</h2>
         <div style="margin-bottom: 3%;">
-
-			<div style="margin-top: 1%;" id="events_default" class="ui message">
-					- No events defined.
+			<div id="events_default" class="ui placeholder segment" style="margin-top: 1%;">
+				No events are listed for this category.
 			</div>
 			<div id="events_populated">
 				<div class="" style="margin: auto">
-					<h3>Please assign events you wish to optimize one of the classes: anchor, float, opportune, routine</h3>
+					<h3>Please assign events you wish to optimize one of the classes: anchor, float, opportune, routine:</h3>
+					<img class="ui centered big image" src="static/events_classes.png?lastmod={{version}}">
 				</div>
 				<table id="events_table" class="ui selectable celled black table">
 					<thead>
@@ -101,20 +127,21 @@
 					</tbody>
 				</table>
 
-				<div style="margin: auto">
-					<button class="ui button blue" onclick="add_selected_to_table('anchor_table')">Add selected to anchor</button>
-					<button class="ui button green" onclick="add_selected_to_table('floating_table')">Add selected to float</button>
-					<button class="ui button red" onclick="add_selected_to_table('opportune_table')">Add selected to opportune</button>
+				<div style="margin: auto; text-align:center">
+					<button class="ui button blue" onclick="add_selected_to_table('anchor_table')">Classify selected as Anchor Event</button>
+					<button class="ui button green" onclick="add_selected_to_table('floating_table')">Classify selected to Floating Event</button>
+					<button class="ui button red" onclick="add_selected_to_table('opportune_table')">Classify selected to Opportune Event</button>
+					<a class="ui button yellow" href="#routine_title">To Classify Routine Events</a>
 				</div>
 			</div>
 		</div>
 
 		<div  style="margin-bottom: 3%;">
 			<div style="margin-bottom: 1%;">
-				<h3>Anchor Events:</h3>
+				<h3 class="ui header"><i class="anchor icon"></i> Anchor Events: </h3>
 			</div>
-			<div id="anchor_default" class="ui message">
-					- No events defined.
+			<div id="anchor_default" class="ui placeholder segment">
+				No events are listed for this category.
 			</div>
 			<div id="anchor_populated">
 				<table id="anchor_table" class="ui selectable celled blue table">
@@ -138,10 +165,10 @@
 
 		<div style="margin-bottom: 3%;">
 			<div style="margin-bottom: 1%;">
-				<h3>Floating Events:</h3>
+				<h3 class="ui header"><i class="map signs icon"></i> Floating Events:</h3>
 			</div>
-			<div id="floating_default" class="ui message">
-					- No events defined.
+			<div id="floating_default" class="ui placeholder segment">
+				No events are listed for this category.
 			</div>
 			<div id="floating_populated">
 				<table id="floating_table" class="ui selectable celled green table">
@@ -165,10 +192,10 @@
 
 		<div style="margin-bottom: 3%;">
 			<div style="margin-bottom: 1%;">
-				<h3>Opportune Events:</h3>
+				<h3 class="ui header"><i class="star outline icon"></i> Opportune Events:</h3>
 			</div>
-			<div id="opportune_default" class="ui message">
-					- No events defined.
+			<div id="opportune_default" class="ui placeholder segment">
+				No events are listed for this category.
 			</div>
 			<div id="opportune_populated">
 				<table id="opportune_table" class="ui selectable celled red table">
@@ -193,7 +220,7 @@
 
 		<div style="margin-bottom: 3%; ">
 			<div style="margin: auto">
-				<h3>Routine Events:</h3>
+				<h3 class="ui header"><i class="coffee icon"></i> Routine Events:</h3>
 			</div>
 
 			<div class="ui form message">
@@ -225,9 +252,8 @@
 				  <div id="routine_button" class="ui submit yellow button">Add</div>
 			  </div>
 			</div>
-
-			<div id="routine_default" class="ui message">
-					- No events defined.
+			<div id="routine_default" class="ui placeholder segment">
+				No events are listed for this category.
 			</div>
 			<div id="routine_populated">
 				<table id="routine_table" class="ui selectable celled yellow table">
@@ -253,60 +279,88 @@
 
 
         <div class="ui container">
-            <h2> Algorithm configurations</h2>
-            <div class="ui container" style="margin-bottom: 3%; border: solid #3a87ad">
+			<h2 class="ui horizontal divider header" style="margin-bottom: 3%; margin-top:3%">
+				<i class="settings icon"></i>
+				 Algorithm configurations
+			</h2>
+            <div class="ui container" style="margin-bottom: 3%;">
                 <div class="ui message" style="margin: auto">
-                    <h3>Select Algorithm:</h3>
                     <select id="dd_algo" name="dd_algo" class="ui dropdown" style="width: 30%">
-                      <option selected="selected"> - </option>
+                      <option selected="selected"> Select Algorithm </option>
                       <option value="Genetic Algorithm">Genetic Algorithm</option>
                       <option value="Simulated Annealing">Simulated Annealing</option>
                     </select>
+
 					<div id="ga_conf_form" style="margin-top:1%;">
-						<form class="ui form">
-							<div class="inline fields" style="margin-top:2%;">
-								<div class="four wide field">
-									<label>Population Size</label>
-									<input id="pop_size" type="text" value="30">
+							<form class="ui form">
+								<div class="ui two column grid">
+									<div class="ui column">
+										<h3>Genetic parameters:</h3>
+										<div  style="margin-top:2%;">
+
+											<div class="five wide field">
+												<label>Population Size</label>
+												<input id="pop_size" type="text" value="30">
+											</div>
+											<div class="five wide field">
+												<label>Generations</label>
+												<input id="gen_num" type="text" value="60">
+											</div>
+											<div class="five wide field">
+												<label>Mutation Factor</label>
+												<input id="mut_fact" type="text" value="0.3">
+											</div>
+											<div class="five wide field">
+												<label>Elitism Factor</label>
+												<input id="elit_fact" type="text" value="0.2">
+											</div>
+											<div class="ui five wide field">
+												<h4>Selection Type</h4>
+												<select id="dd_selection_ga" name="dd_selection_ga" class="ui dropdown" ">
+													  <option selected="selected"> - </option>
+													  <option value="0">Fully Random</option>
+													  <option value="1">Elitistic Random</option>
+													  <option value="2">Wheel Selection</option>
+													  <option value="3">Elitistic Exponential</option>
+												</select>
+											</div>
+										</div>
+									</div>
+
+
+									<div class="ui column">
+
+										<h3>Meta parameters:</h3>
+										<div class="" style="margin-top:2%;">
+											<div class="ui slider five wide field checkbox">
+											  <input id="adaptive" type="checkbox" name="adaptive">
+											  <label>Adaptive</label>
+											</div>
+											<div class="five wide field">
+												<label>adaptive lookback</label>
+												<input id="adaptive_lookback" type="text" value="5">
+											</div>
+										</div>
+										<div class="" style="margin-top:2%;">
+											<div class="ui five wide field slider checkbox">
+											  <input id="enable_purge" type="checkbox" name="enable_purge">
+											  <label>Purge</label>
+											</div>
+											<div class="five wide field">
+												<label>Purge lookback</label>
+												<input id="purge_lookback" type="text" value="10">
+											</div>
+											<div class="five wide field">
+												<label>Purge effect</label>
+												<input id="purge_effect" type="text" value="1">
+											</div>
+										</div>
+									</div>
 								</div>
-								<div class="four wide field">
-									<label>Generations</label>
-									<input id="gen_num" type="text" value="60">
-								</div>
-								<div class="four wide field">
-									<label>Mutation Factor</label>
-									<input id="mut_fact" type="text" value="0.3">
-								</div>
-								<div class="four wide field">
-									<label>Elitism Factor</label>
-									<input id="elit_fact" type="text" value="0.2">
-								</div>
-							</div>
-							<div class="inline fields" style="margin-top:2%;">
-								<div class="ui slider four wide field checkbox">
-								  <input id="adaptive" type="checkbox" name="adaptive">
-								  <label>Adaptive</label>
-								</div>
-								<div class="four wide field">
-									<label>adaptive lookback</label>
-									<input id="adaptive_lookback" type="text" value="5">
-								</div>
-							</div>
-							<div class="inline fields" style="margin-top:2%;">
-								<div class="ui four wide field slider checkbox">
-								  <input id="enable_plague" type="checkbox" name="enable_plague">
-								  <label>Plague</label>
-								</div>
-								<div class="four wide field">
-									<label>Plague lookback</label>
-									<input id="plague_lookback" type="text" value="10">
-								</div>
-								<div class="four wide field">
-									<label>Plague effect</label>
-									<input id="plague_effect" type="text" value="1">
-								</div>
-							</div>
-						</form>
+
+							</form>
+						</div>
+
 					</div>
 					<div id="sa_conf_form" style="margin-top:1%;">
 						<form class="ui form">
@@ -323,7 +377,7 @@
 									</div>
 									<div class="four wide field">
 										<label>adaptive lookback</label>
-										<input id="adaptive_lookback_sa" type="text" value="5">
+										<input id="adaptive_lookback_sa" type="text" value="10">
 									</div>
 							</div>
 						</form>
@@ -336,10 +390,11 @@
 
         </div>
 
+	<div class="ui container" style="text-align: center;">
+		<button id="calc_button" class="ui button big" style=";margin-bottom: 7%;">Calendize</button>
+	</div>
 	</div>
 
-	<button id="calc_button" class="ui button big" style="margin-inline-start: 45%;margin-bottom: 30px;">Optimize!</button>
-
-
+</div>
 </body>
 </html>

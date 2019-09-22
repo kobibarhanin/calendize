@@ -53,7 +53,7 @@ class SimulatedAnnealingEngine(Engine):
         print(f'lookback_table = {str(lookback_table)}, taken? {adapt_sa}')
 
         if adapt_sa:
-            self.adapted_timestamps.append(time)
+            self.adapted_timestamps.append(time-1)
             tmp_schedule_res = self.get_clashes_in_schedule(self.schedule)
             if len(tmp_schedule_res) < self.best_result:
                 self.best_schedule = self.schedule

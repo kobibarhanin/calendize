@@ -31,10 +31,8 @@ class Population:
         for gene in self.genes:
             gene.calculate_fitness()
 
-
     def sort(self):
         self.genes.sort(key=lambda x: x.fitness, reverse=False)
-
 
     def elitism(self, elitism_factor):
         elitism_abs = int(len(self.genes)*elitism_factor+1)
@@ -48,9 +46,9 @@ class Population:
         fitness_wheel = []
         wheel_total = 0
         for gene in population:
-            genval = worst_fitness - gene.fitness
-            wheel_total += genval
-            fitness_wheel.append(genval)
+            gen_val = worst_fitness - gene.fitness
+            wheel_total += gen_val
+            fitness_wheel.append(gen_val)
 
         p1_raw = random.randint(0, wheel_total)
         p2_raw = random.randint(0, wheel_total)
@@ -104,14 +102,14 @@ class Population:
             gene.set_schedule(scdule.Schedule(instances))
 
     @staticmethod
-    def generate_idx_exp (M):
-        proba = random.random()
-        max = 0
-        for i in range(1, M + 1):
-            max += (1 / 2) ** i
-            if (proba <= max):
+    def generate_idx_exp(gen_range):
+        prob = random.random()
+        max_value = 0
+        for i in range(1, gen_range + 1):
+            max_value += (1 / 2) ** i
+            if prob <= max_value:
                 return i - 1
-        return Population.generate_idx_exp(M)
+        return Population.generate_idx_exp(gen_range)
 
     def purge(self, size):
         for i in range(0,size):

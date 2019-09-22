@@ -33,7 +33,7 @@ app.secret_key = b'j\x187N<\x8ci-\xd5\x7f\x84\x8diqz\xd1\xfb\x93DB\x82\xf2\x101'
 @app.route('/')
 def index():
     print("* Landing Page rendered *")
-    return render_template('CalCendar-landing.html', version=''.join(random.choices(string.ascii_uppercase + string.digits, k=10)))
+    return render_template('calendize_landing.html', version=''.join(random.choices(string.ascii_uppercase + string.digits, k=10)))
 
 @app.route('/authorize')
 def authorize():
@@ -121,7 +121,7 @@ def credentials_to_dict(credentials):
 @app.route("/calculator")
 def render_homePage():
     print("* Home Page rendered *")
-    return render_template('CalCendar.html', version=''.join(random.choices(string.ascii_uppercase + string.digits, k=10)))
+    return render_template('calendize_main.html', version=''.join(random.choices(string.ascii_uppercase + string.digits, k=10)))
 
 
 @app.route("/fetch")

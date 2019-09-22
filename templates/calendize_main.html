@@ -14,21 +14,23 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.min.js'></script>
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 	<link href="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.css" rel="stylesheet" type="text/css" />
+	<link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
-
-
-	<link href='static/CalCendar.css?version={{version}}' rel='stylesheet' />
-	<script src="static/CalCendar.js?version={{version}}"></script>
+	<link href='static/calendize.css?version={{version}}' rel='stylesheet' />
+	<script src="static/calendize.js?version={{version}}"></script>
 
 </head>
-<body>
+<body style="background-color: #d3d3d3">
 
-	<div class="ui container" style="width:70%">
+	<div class="ui container" style="width: 80%; background-color: #ffffff; border-radius: 25px; margin: 5%">
+
+	<div class="ui container" style="width:90%; height: 90%;padding-bottom: 2%; ">
 		<img src="static/calendize.png?lastmod={{version}}" alt="Calendize" style="width:80%;height:30%; ">
-		<div class="ui form" id="datepicker" style="margin-top: 3%">
-			<h3> Please specify a time range for optimization, and click fetch to get google calendar events:</h3>
-			<div class="three fields" >
+		<div class="ui form" id="datepicker" style="margin-top: 3% ">
+			<h3 style="margin-bottom: 3%"> Please specify a time range for optimization, and click fetch to get google calendar events:</h3>
+			<div class="two fields ui one column center aligned page grid" style="margin-bottom: 1%">
 				  <div class="field">
 					<div class="ui calendar" id="rangestart">
 					  <div class="ui input left icon">
@@ -45,19 +47,16 @@
 					  </div>
 					</div>
 				  </div>
-				<div class="field">
-					<button id="fetch_button" class="ui button primary">Fetch events</button>
-					<button id="dev_button" class="ui button secondary">dev</button>
-
-				</div>
-				<div class="field">
-				</div>
+			</div>
+			<div class="" style="text-align: center">
+				<button id="fetch_button" class="ui big button primary">Fetch events</button>
+				<button id="dev_button" class="ui button secondary">dev</button>
 			</div>
 		</div>
 	</div>
 	<div id="main_body">
-	<div class="ui container" style="width:70%">
-		<h2 id="calendar_header" class="ui horizontal divider header" style="margin-bottom: 3%; margin-top:3%">
+	<div class="ui container" style="width:80%">
+		<h2 id="calendar_header" class="ui horizontal divider header" style="margin-bottom: 3%; margin-top:1%">
 			<i class="calendar icon"></i>
 			Your Calendar
 		</h2>
@@ -93,8 +92,6 @@
 				<div style="margin-right: 1%"><i class="circle blue icon"></i>Clashes</div>
 				<div style="margin-right: 1%"><i class="circle green icon"></i>Adaptations</div>
 				<div style="margin-right: 1%"><i class="circle red icon"></i>Purging</div>
-
-
 			</div>
 		</div>
     </div>
@@ -113,21 +110,22 @@
 					<h3>Please assign events you wish to optimize one of the classes: anchor, float, opportune, routine:</h3>
 					<img class="ui centered big image" src="static/events_classes.png?lastmod={{version}}">
 				</div>
-				<table id="events_table" class="ui selectable celled black table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>ID</th>
-							<th>Start Time</th>
-							<th>End Time</th>
-							<th>Select</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-
-				<div style="margin: auto; text-align:center">
+				<div class="table_scroll">
+					<table id="events_table" class="ui selectable celled black table">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>ID</th>
+								<th>Start Time</th>
+								<th>End Time</th>
+								<th>Select</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<div style="margin-top:1%; text-align:center">
 					<button class="ui button blue" onclick="add_selected_to_table('anchor_table')">Classify selected as Anchor Event</button>
 					<button class="ui button green" onclick="add_selected_to_table('floating_table')">Classify selected to Floating Event</button>
 					<button class="ui button red" onclick="add_selected_to_table('opportune_table')">Classify selected to Opportune Event</button>
@@ -138,26 +136,29 @@
 
 		<div  style="margin-bottom: 3%;">
 			<div style="margin-bottom: 1%;">
-				<h3 class="ui header"><i class="anchor icon"></i> Anchor Events: </h3>
+				<h3 id="anchor_header" class="ui header"><i class="anchor icon"></i> Anchor Events: </h3>
 			</div>
 			<div id="anchor_default" class="ui placeholder segment">
 				No events are listed for this category.
 			</div>
 			<div id="anchor_populated">
-				<table id="anchor_table" class="ui selectable celled blue table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>ID</th>
-							<th>Start Time</th>
-							<th>End Time</th>
-							<th>Select</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-				<div style="margin: auto">
+				<div class="table_scroll">
+					<table id="anchor_table" class="ui selectable celled blue table">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>ID</th>
+								<th>Start Time</th>
+								<th>End Time</th>
+								<th>Select</th>
+							</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+					</table>
+				</div>
+				<div style="margin-top: 1%">
 					<button class="ui red basic button" onclick="remove_selected('anchor_table')">Remove selected</button>
 				</div>
 			</div>
@@ -165,26 +166,28 @@
 
 		<div style="margin-bottom: 3%;">
 			<div style="margin-bottom: 1%;">
-				<h3 class="ui header"><i class="map signs icon"></i> Floating Events:</h3>
+				<h3 id="floating_header" class="ui header"><i class="map signs icon"></i> Floating Events:</h3>
 			</div>
 			<div id="floating_default" class="ui placeholder segment">
 				No events are listed for this category.
 			</div>
-			<div id="floating_populated">
-				<table id="floating_table" class="ui selectable celled green table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>ID</th>
-							<th>Start Time</th>
-							<th>End Time</th>
-							<th>Select</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-				<div style="margin: auto">
+			<div id="floating_populated" >
+				<div class="table_scroll">
+					<table id="floating_table" class="ui selectable celled green table">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>ID</th>
+								<th>Start Time</th>
+								<th>End Time</th>
+								<th>Select</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<div style="margin-top: 1%">
 					<button class="ui red basic button" onclick="remove_selected('floating_table')">Remove selected</button>
 				</div>
 			</div>
@@ -192,26 +195,28 @@
 
 		<div style="margin-bottom: 3%;">
 			<div style="margin-bottom: 1%;">
-				<h3 class="ui header"><i class="star outline icon"></i> Opportune Events:</h3>
+				<h3 id="opportune_header" class="ui header"><i class="star outline icon"></i> Opportune Events:</h3>
 			</div>
 			<div id="opportune_default" class="ui placeholder segment">
 				No events are listed for this category.
 			</div>
 			<div id="opportune_populated">
-				<table id="opportune_table" class="ui selectable celled red table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>ID</th>
-							<th>Start Time</th>
-							<th>End Time</th>
-							<th>Select</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-				<div style="margin: auto">
+				<div class="table_scroll">
+					<table id="opportune_table" class="ui selectable celled red table">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>ID</th>
+								<th>Start Time</th>
+								<th>End Time</th>
+								<th>Select</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<div style="margin-top: 1%">
 					<button class="ui red basic button" onclick="remove_selected('opportune_table')">Remove selected</button>
 				</div>
 			</div>
@@ -220,7 +225,7 @@
 
 		<div style="margin-bottom: 3%; ">
 			<div style="margin: auto">
-				<h3 class="ui header"><i class="coffee icon"></i> Routine Events:</h3>
+				<h3 id="routine_header" class="ui header"><i class="coffee icon"></i> Routine Events:</h3>
 			</div>
 
 			<div class="ui form message">
@@ -255,26 +260,26 @@
 			<div id="routine_default" class="ui placeholder segment">
 				No events are listed for this category.
 			</div>
-			<div id="routine_populated">
-				<table id="routine_table" class="ui selectable celled yellow table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Duration</th>
-							<th>From</th>
-							<th>To</th>
-							<th>Select</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-				<div style="margin: auto">
-					<button class="ui red basic button" onclick="remove_selected_routing()">Remove selected</button>
+				<div id="routine_populated">
+					<div class="table_scroll">
+						<table id="routine_table" class="ui selectable celled yellow table">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Duration</th>
+									<th>From</th>
+									<th>To</th>
+									<th>Select</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+					<div style="margin-top: 1%">
+						<button class="ui red basic button" onclick="remove_selected_routing()">Remove selected</button>
+					</div>
 				</div>
-			</div>
-
-
 		</div>
 
 
@@ -383,15 +388,11 @@
 						</form>
 					</div>
                 </div>
-
 			</div>
-
-
-
         </div>
 
 	<div class="ui container" style="text-align: center;">
-		<button id="calc_button" class="ui button big" style=";margin-bottom: 7%;">Calendize</button>
+		<a id="calc_button" class="ui button big" style=";margin-bottom: 7%;">Calendize</a>
 	</div>
 	</div>
 

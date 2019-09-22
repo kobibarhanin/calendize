@@ -32,6 +32,7 @@ function clean(){
 $(document).ready(function () {
     initiate([], new Date().toISOString().split("T")[0], true)
     $('#main_body').hide();
+
 });
 
 // '2018-12-26'
@@ -39,6 +40,7 @@ startDate=new Date(2018, 11, 23, 0, 0, 0, 0);
 endDate=new Date(2018, 11, 29, 0, 0, 0, 0);
 
 function initiate(events, defaultDate, first) {
+
 $('#main_body').show();
     if (first){
         $("#routine_populated").hide()
@@ -252,7 +254,11 @@ $('#main_body').show();
                     calendar_instances = instances
                     $("#calc_button").removeClass("loading");
                     initiate(instances,endDate.toISOString().split("T")[0], false);
-                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                    $("html, body").animate({
+                        scrollTop: $("#calendar").offset().top},
+                        "slow"
+                    );
+
           });
     });
 
@@ -267,7 +273,6 @@ $('#main_body').show();
                 $('#calendar').empty();
                 $("#calendar_header").after("<div id='calendar' style='max-width: none; margin-top:2%'></div>");
 
-
                 instances_golbal=instances;
                 for (var i=0; i< instances_golbal.length; i++){
                    instances_golbal_mapping[instances_golbal[i]['id']]=i;
@@ -276,6 +281,10 @@ $('#main_body').show();
                 switcher("events_populated","events_default")
                 initiate(instances,endDate.toISOString().split("T")[0], false);
                 build_table(instances_golbal,'events_table')
+                $("html, body").animate({
+                    scrollTop: $("#calendar").offset().top},
+                    "slow"
+                );
         });
     });
 
@@ -289,7 +298,7 @@ $('#main_body').show();
         title = $('#routine_title').val();
         duration = $('#routine_duration').val();
 
-        var table = document.getElementById('routine_table');
+        var table = document.getElementById('routine_table').getElementsByTagName('tbody')[0];;
         var row = table.insertRow(table.rows.length);
         row.id = title+"_"+Math.random().toString(36).substring(7);
         var cell1 = row.insertCell(0);
@@ -319,7 +328,7 @@ $('#main_body').show();
 
 
 function build_table (entries,table_id) {
-    var table = document.getElementById(table_id);
+    var table = document.getElementById(table_id).getElementsByTagName('tbody')[0];
     entries.forEach(function(entry){
         var row = table.insertRow(table.rows.length);
         row.id = "row_"+entry["id"];
@@ -346,7 +355,7 @@ function add_selected_to_table(table_id) {
 }
 
 function add_to_row_table(entry,table_id) {
-    var table = document.getElementById(table_id);
+    var table = document.getElementById(table_id).getElementsByTagName('tbody')[0];
     var row = table.insertRow(table.rows.length);
     row.id = "row_"+entry["id"];
     var cell1 = row.insertCell(0);
@@ -449,3 +458,4 @@ function switcher(on, off){
     $("#"+off).hide()
     $("#"+on).show()
 }
+

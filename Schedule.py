@@ -1,5 +1,6 @@
 import json
 import random
+from Event import AnchorEvent
 
 class Schedule:
 
@@ -44,7 +45,7 @@ class Schedule:
 def generate_schedule(events):
     schedule = Schedule()
     for event in events:
-        if len(event.instances) == 1:
+        if event.instances is AnchorEvent:
             schedule.add_instance(event.instances[0])
         else:
             schedule.add_instance(random.choice(event.instances))
